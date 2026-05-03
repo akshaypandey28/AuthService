@@ -1,3 +1,5 @@
+`npm start`
+
 # Auth Microservice
 
 ### Model Commands
