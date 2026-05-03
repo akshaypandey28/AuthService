@@ -1,4 +1,5 @@
 const {User,Role} = require('../models/index.js');
+const ValidationError = require('../utils/validation-error.js');
 
 class UserRepository {
 
@@ -7,7 +8,12 @@ class UserRepository {
             const user = await User.create(data);
             return user;
         } catch (error) {
-            console.log("Something went wrong in the repository layer");
+            if(error.name == 'SequelizeValidationError') {
+                let validationError = new ValidationError(error);
+                throw validationError;
+            }
+            
+            console.log("Something went wrong in the repository layer while creating the user");
             throw error;
         }
     }
@@ -21,7 +27,7 @@ class UserRepository {
             });
             return true;
         } catch (error) {
-            console.log("Something went wrong in the repository layer");
+            console.log("Something went wrong in the repository layer while deleting the user");
             throw error;
         }
     }
@@ -33,7 +39,7 @@ class UserRepository {
             });
             return user;
         } catch (error) {
-            console.log("Something went wrong on repository layer");
+            console.log("Something went wrong on repository layer while fetching user by id");
             throw error;
         }
     }
@@ -47,7 +53,7 @@ class UserRepository {
             });
             return user;
         } catch (error) {
-            console.log("Something went wrong on repository layer");
+            console.log("Something went wrong on repository layer while fetching user by email");
             throw error;
         }
     }
@@ -62,7 +68,7 @@ class UserRepository {
             });
             return user.hasRole(adminRole); //this is fetched from user_roles table by sequelize and it will return boolean
         } catch (error) {
-            console.log("Something went wrong on repository layer");
+            console.log("Something went wrong on repository layer while checking for admin role");
             throw error;
         }
     }

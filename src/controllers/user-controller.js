@@ -17,11 +17,11 @@ const createUser = async (req,res) =>{
         })
     } catch (error) {
         console.log("Something went wrong in the controller layer");
-        return res.status(500).json({
-            data:{},
-            message:'Something went wrong in the controller layer while creating the user',
-            success:false,
-            err:error
+        return res.status(error.statusCode).json({
+            message: error.message,
+            data: {},
+            success: false,
+            err: error.explanation
         })
     }
 }
