@@ -1,8 +1,10 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { StatusCodes } = require('http-status-codes');
 
 const UserRepository = require('../repository/user-repository.js');
 const {JWT_KEY} = require('../config/serverConfig.js');
+const AppError = require('../utils/error-handler.js');
 
 class UserService {
     constructor(){
@@ -28,13 +30,27 @@ class UserService {
             // step 1-> fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
 
+            if (!user) {
+                throw new AppError(
+                    'UserNotFound',
+                    'User does not exist',
+                    'No user found with given email',
+                    StatusCodes.NOT_FOUND
+                );
+            }
+
             // step 2-> compare incoming plain password with stores encrypted password
             const passwordsMatch = this.#checkPassword(plainPassword, user.password); //true or false
 
-            if(!passwordsMatch) {
-                console.log("Password doesn't match");
-                throw {error: 'Incorrect password'};
+            if (!passwordsMatch) {
+                throw new AppError(
+                    'IncorrectPassword',
+                    'Password mismatch',
+                    'Entered password is incorrect',
+                    StatusCodes.UNAUTHORIZED
+                );
             }
+
 
             // step 3-> if passwords match then create a token and send it to the user
             const newJWT = this.#createToken({email: user.email, id: user.id});
