@@ -1,4 +1,4 @@
-const {User} = require('../models/index.js');
+const {User,Role} = require('../models/index.js');
 
 class UserRepository {
 
@@ -60,7 +60,7 @@ class UserRepository {
                     name: 'ADMIN'
                 }
             });
-            return user.hasRole(adminRole);
+            return user.hasRole(adminRole); //this is fetched from user_roles table by sequelize and it will return boolean
         } catch (error) {
             console.log("Something went wrong on repository layer");
             throw error;
