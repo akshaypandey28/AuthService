@@ -38,11 +38,13 @@ class UserRepository {
         }
     }
 
-    async getByEmail(userEmail) {
+    async getByEmail(userEmail) { //here we want all data of the user including the password because we need to compare the password for sign in
         try {
-            const user = await User.findOne({where: {
-                email: userEmail
-            }});
+            const user = await User.findOne({
+                where: {
+                    email: userEmail
+                }
+            });
             return user;
         } catch (error) {
             console.log("Something went wrong on repository layer");
